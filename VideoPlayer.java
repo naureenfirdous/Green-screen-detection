@@ -114,6 +114,8 @@ public class VideoPlayer {
 	public void removeGreenBoundaries() {
 		int count = 0;
 		BufferedImage imgThree = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		System.out.println("Saturation :" + SAT);
+		System.out.println("Value :" + VAL);
 		while (count < 480) {
 			try {
 				imgOne = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
@@ -139,7 +141,7 @@ public class VideoPlayer {
 							else {
 								double[] hsv = new double[3];
 								hsv = rgb_to_hsv(red, green, blue);
-								if(hsv[0] >= 60 && hsv[0] <= (MAX_HUE+15) && hsv[1] >= SAT && hsv[2] >= VAL) {
+								if(hsv[0] >= 60 && hsv[0] <= (MAX_HUE+30) && hsv[1] >= SAT && hsv[2] >= VAL) {
 									//RGB avg_rgb;
 									//pix = avgRGB(x,y,imgOne);
 									Color bgcolor = new Color(imgOne.getRGB(x, y));
@@ -236,24 +238,40 @@ public class VideoPlayer {
 		System.out.println("max Saturation :" + maxSat);
 		System.out.println("Value :" + VAL);
 		System.out.println("max Value :" + maxVal);
-		if(VAL >= 0.55) {
-			VAL = VAL - 0.35;
+		/*if(VAL >= 0.75) {
+			VAL = VAL - 0.55;
+		}
+		else if(VAL >= 0.65) {
+			VAL = VAL - 0.45;
+		}
+		else if(VAL >= 0.55) {
+			VAL = VAL - 0.3;
 		}
 		else if(VAL >= 0.45) {
 			VAL = VAL - 0.25;
 		}
 		else if(VAL >= 0.35) {
-			VAL = VAL - 0.15;
+			VAL = VAL - 0.175;
 		}
 		else {
 			VAL = VAL - 0.1;
 		}
-		if(SAT >= 0.45) {
+
+		if(SAT >= 0.65) {
+			SAT = SAT - 0.375;
+		}
+		else if(SAT >= 0.55) {
+			SAT = SAT - 0.25;
+		}
+		else if(SAT >= 0.45) {
 			SAT = SAT - 0.225;
 		}
-		else {
+		else if(SAT >= 0.35){
 			SAT = SAT - 0.125;
 		}
+		else {
+			SAT = SAT - 0.1;
+		}*/
 	}
 
 	/**
@@ -307,14 +325,10 @@ public class VideoPlayer {
 						double newRed = (double) R;
 						double newGreen = (double) G;
 						double newBlue = (double) B;
+						double[] hsv = new double[3];
+						hsv = rgb_to_hsv(R, G, B);
 						if (flag == 0 && args[2].equalsIgnoreCase("1")) {
-							double[] hsv = new double[3];
-							hsv = rgb_to_hsv(R, G, B);
-							if (hsv[0] >= 60.0 && hsv[0] <= 175.0 && hsv[1] >= 0.35 && hsv[2] >= 0.2) {
-								/*Color mycolor = new Color(imgOne.getRGB(x, y));
-								int red = mycolor.getRed();
-								int green = mycolor.getGreen();
-								int blue = mycolor.getBlue();*/
+							if (hsv[0] >= 60.0 && hsv[0] <= 175.0 && hsv[1] >= 0.4 && hsv[2] >= 0.2) {
 								r = (byte) 255;
 								g = (byte) 255;
 								b = (byte) 255;
@@ -324,6 +338,7 @@ public class VideoPlayer {
 							if(count == 0) {
 								RGB sum = new RGB(newRed,newGreen,newBlue);
 								originalRGB[y][x] = sum;
+								//originalHSV[y][x] = new HSV(hsv[0],hsv[1],hsv[2]);
 							}
 							if(count > 0) {
 								RGB prev = originalRGB[y][x];
@@ -338,11 +353,31 @@ public class VideoPlayer {
 								red = red/count;
 								green = green/count;
 								blue = blue/count;
-								Color mycolor = new Color(prevImg.getRGB(x, y));
+								/*HSV prev = originalHSV[y][x];
+								double prev_hue = prev.h;
+								double prev_sat = prev.s;
+								double prev_val = prev.v;
+								prev.h = prev.h + hsv[0];
+								prev.s = prev.s + hsv[1];
+								prev.v = prev.v + hsv[2];
+								originalHSV[y][x] = prev;
+								prev_hue = prev_hue/count;
+								prev_sat = prev_sat/count;
+								prev_val = prev_val/count;*/
+								/*Color mycolor = new Color(prevImg.getRGB(x, y));
 								int prevRed = mycolor.getRed();
 								int prevGreen = mycolor.getGreen();
-								int prevBlue = mycolor.getBlue();
-								if(Math.abs(red-R) <= 10  && Math.abs(blue-B) <= 10  && Math.abs(green-G) <= 10) {
+								int prevBlue = mycolor.getBlue();*/
+								/*if(Math.abs(hsv[0]-prev_hue) <= 60  && Math.abs(hsv[1]-prev_sat) <= 0.15  && Math.abs(hsv[2]-prev_val) <= 0.2) {
+									Color bgcolor = new Color(imgOne.getRGB(x, y));
+									int bgred = bgcolor.getRed();
+									int bggreen = bgcolor.getGreen();
+									int bgblue = bgcolor.getBlue();
+									r = (byte)bgred;
+									g = (byte)bggreen;
+									b = (byte)bgblue;
+								}*/
+								if(Math.abs(red-R) <= 15  && Math.abs(blue-B) <= 15  && Math.abs(green-G) <= 15) {
 									Color bgcolor = new Color(imgOne.getRGB(x, y));
 									int bgred = bgcolor.getRed();
 									int bggreen = bgcolor.getGreen();
